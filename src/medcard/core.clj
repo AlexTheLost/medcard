@@ -21,9 +21,8 @@
 
 (def mdc
   (list
-    (include-css "https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css")
-    (include-css "https://fonts.googleapis.com/css?family=Roboto:300,400,500")
-    (include-js "https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js")
+    (include-css "/min.css")
+    (include-js "/min.js")
     [:style
      ".table-el {
      margin: 15px 0px;
@@ -85,10 +84,10 @@
        [:span "Пол"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
-       [:span "День рождения"]]
+       [:span "Дата рождения"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
-       [:span "Посмотреть записи"]]
+       [:span "Список пациентов"]]
 
       ]
 
@@ -196,7 +195,7 @@
      [:br]
      [:br]
 
-     [:label "День рождения:"
+     [:label "Дата рождения:"
       [:br]
       ;; :value "30/11/2015" :placeholder "DD/MM/YYYY" :pattern "[0-9]{2}/[0-9]{2}/[0-9]{4}"
       [:input {:type "date" :name "birthdate" :value (:birthdate card) :class "inputs" :required true}]]
@@ -249,7 +248,7 @@
 
   [:body {:class "mdc-typography"}
 
-   [:div {:style "width:40%; margin: auto;"}
+   [:div {:style "width:60%; margin: auto;"}
 
     mdc
 
@@ -259,12 +258,11 @@
      }"]
 
 
-
     [:div {:class "mdc-layout-grid"}
      [:div {:class "mdc-layout-grid__inner bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-8 mdc-typography--headline6"}
-       [:a {:href "/" :class "mdc-button menu-el"} "Посмотреть всех"]]
+       [:a {:href "/" :class "mdc-button menu-el"} "Список пациентов"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
        [:a {:href (str "/card/change/" (:id card)) :class "mdc-button menu-el"} "Редактировать"]]
@@ -272,7 +270,7 @@
       ]]
 
 
-    [:h3 "Параметры выбранного пользователя:"]
+    [:h3 "Параметры выбранного пациента:"]
 
 
     [:div {:class "mdc-layout-grid"}
@@ -319,7 +317,7 @@
      [:div {:class "mdc-layout-grid__inner bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
-       [:span "День рождения"]]
+       [:span "Дата рождения"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:birthdate card)]]]
@@ -359,13 +357,13 @@
     [:div {:class "mdc-layout-grid"}
      [:div {:class "mdc-layout-grid__inner"}
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-typography--headline6"}
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
        [:span "Название осмотра"]]
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-typography--headline6"}
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
        [:span "Дата"]]
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-typography--headline6"}
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-typography--headline6"}
        [:span "Описание"]]]
 
 
@@ -374,13 +372,13 @@
          (conj view
                [:div {:class "mdc-layout-grid__inner bbbb"}
 
-                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
+                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 table-el"}
                  [:span (:name record)]]
 
-                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
+                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 table-el"}
                  [:span (:create_time record)]]
 
-                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
+                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-6 table-el"}
                  [:span (:description record)]]]))
        (list)
        records)
@@ -419,16 +417,16 @@
 (defroutes handler
   (GET "/" []
        (->> (sql-query/select-card-all)
-            pprn
             view-med-cards
             html
-            ;;             html-formating
+            ;; html-formating
             (str "<!DOCTYPE html> \n")
             ))
 
+
   (GET "/card/add" []
        (->> (html (view-add-card "/card/add"))
-            html-formating
+            ;; html-formating
             (str "<!DOCTYPE html> \n")
             ))
 
@@ -442,7 +440,7 @@
          (let [card (sql-query/select-card-by-id id)]
            (->> (view-add-card (str "/card/change/" id) card)
                 (html)
-                html-formating
+                ;; html-formating
                 (str "<!DOCTYPE html> \n")
                 ))))
 
@@ -454,7 +452,7 @@
 
   (POST "/card/add" {params :params}
         (let [id (sql-query/insert-card params)]
-          (pstr params)
+          ;; (pstr params)
           (redirect (str "/card/view/" id))))
 
 
@@ -477,7 +475,7 @@
   (route/resources "/")
 
   (route/not-found "<h1>Page not found</h1>"))
-;; (sql-query/select-card-by-id 21)
+
 
 (def app
   (-> handler

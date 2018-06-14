@@ -36,13 +36,20 @@
      border: 1px solid black;
      }
      .ggray {
-      background-color: #5F9EA0;
+      background-color: #b3e0ff;
      }
      .bgray {
       background-color: #E6E6FA;
      }
      "]
     ))
+
+
+(def footer
+  [:footer
+   [:hr]
+   [:div {:style "text-align: center;"} "&#169 Ксения Мелех"]])
+
 
 (defn html-formating [html-str]
   (.html (.body (Jsoup/parseBodyFragment html-str))))
@@ -124,6 +131,8 @@
                 ]))
        (list)
        med-cards)
+
+     footer
 
      ]]])
 
@@ -246,6 +255,8 @@
 
      [:input {:type "submit" :name "" :value "Сохранить"}]]
 
+    footer
+
     ]])
 
 
@@ -266,7 +277,7 @@
     [:div {:class "mdc-layout-grid ggray bbbb"}
      [:div {:class "mdc-layout-grid__inner"}
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-8 mdc-typography--headline6"}
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-10 mdc-typography--headline6"}
        [:a {:href "/" :class "mdc-button menu-el"} "Список пациентов"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
@@ -274,11 +285,10 @@
 
       ]]
 
-
-    [:h3 "Параметры выбранного пациента:"]
-
-
     [:div {:class "mdc-layout-grid"}
+
+     [:h3 "Параметры выбранного пациента:"]
+
      [:div {:class "mdc-layout-grid__inner"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-typography--headline6"}
@@ -352,25 +362,28 @@
        [:span (:weight card)]]]
      ]
 
-
-    [:h3 "Список осмотров:"]
-
-    [:a {:href (str "/card/record/add/" (:id card))  :class "mdc-button menu-el"} "Добавить осмотр"]
-    [:br]
+    [:div {:class "mdc-layout-grid"}
 
 
-    [:div {:class "mdc-layout-gridW"}
-     [:div {:class "mdc-layout-grid__inner"}
+     [:h3 "Список осмотров:"]
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6 "}
-       [:span "Название осмотра"]]
+     [:a {:href (str "/card/record/add/" (:id card))  :class "mdc-button menu-el"} "Добавить осмотр"]
+     [:br]
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
-       [:span "Дата"]]
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-typography--headline6"}
-       [:span "Описание"]]]
 
+     (when-not (empty? records)
+
+       [:div {:class "mdc-layout-grid__inner"}
+
+        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6 "}
+         [:span "Название осмотра"]]
+
+        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
+         [:span "Дата"]]
+
+        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-typography--headline6"}
+         [:span "Описание"]]])
 
      (reduce
        (fn [view record]
@@ -387,6 +400,8 @@
                  [:span (:description record)]]]))
        (list)
        records)
+
+     footer
 
      ]]])
 
@@ -416,6 +431,9 @@
     [:br]
 
     [:input {:type "submit" :value "Сохранить"}]
+
+    footer
+
     ]])
 
 

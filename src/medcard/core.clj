@@ -35,6 +35,12 @@
      margin: 5px 0px;
      border: 1px solid black;
      }
+     .ggray {
+      background-color: #5F9EA0;
+     }
+     .bgray {
+      background-color: #E6E6FA;
+     }
      "]
     ))
 
@@ -53,8 +59,8 @@
    [:body {:class "mdc-typography"}
 
 
-    [:div {:class "mdc-layout-grid"}
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+    [:div {:class "mdc-layout-grid ggray bbbb"}
+     [:div {:class "mdc-layout-grid__inner"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-8 mdc-typography--headline6"}
        [:a {:href "/card/add" :class "mdc-button menu-el"} "Добавить новую карту"]]
@@ -86,8 +92,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
        [:span "Дата рождения"]]
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
-       [:span "Список пациентов"]]
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}]
 
       ]
 
@@ -96,7 +101,7 @@
      (reduce
        (fn [view {id :id family_name :family_name first_name :first_name last_name :last_name gender :gender birthdate :birthdate blood_type :blood_type height :height weight :weight}]
          (conj view
-               [:div {:class "mdc-layout-grid__inner bbbb"}
+               [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
                 [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 table-el"}
                  [:span family_name]]
@@ -154,21 +159,21 @@
 
      [:label "Фамилия:"
       [:br]
-      [:input {:type "text" :minlength 1 :name "family_name" :value (:family_name card) :class "inputs" :required true}]]
+      [:input {:type "text" :minlength 1 :pattern "[А-Я][а-я]{0,10}" :title "Первая буква заглавная и далее до 10 строчных" :name "family_name" :value (:family_name card) :class "inputs" :required true}]]
 
      [:br]
      [:br]
 
      [:label "Имя:"
       [:br]
-      [:input {:type "text" :minlength 1 :name "first_name" :value (:first_name card) :class "inputs" :required true}]]
+      [:input {:type "text" :minlength 1 :pattern "[А-Я][а-я]{0,10}" :title "Первая буква заглавная и далее до 10 строчных" :name "first_name" :value (:first_name card) :class "inputs" :required true}]]
 
      [:br]
      [:br]
 
      [:label "Отчество:"
       [:br]
-      [:input {:type "text" :minlength 1 :name "last_name" :value (:last_name card) :class "inputs" :required true}]]
+      [:input {:type "text" :minlength 1 :pattern "[А-Я][а-я]{0,10}" :title "Первая буква заглавная и далее до 10 строчных" :name "last_name" :value (:last_name card) :class "inputs" :required true}]]
 
      [:br]
      [:br]
@@ -227,14 +232,14 @@
      [:br]
      [:label "Рост:"
       [:br]
-      [:input {:type "text" :min 1 :name "height" :value (:height card) :class "inputs" :required true}]]
+      [:input {:type "number" :min 1 :max 250 :name "height" :value (:height card) :class "inputs" :required true}]]
 
      [:br]
      [:br]
 
      [:label "Вес:"
       [:br]
-      [:input {:type "number" :min 1 :name "weight" :value (:weight card) :class "inputs" :required true}]]
+      [:input {:type "number" :min 1 :max 250 :name "weight" :value (:weight card) :class "inputs" :required true}]]
 
      [:br]
      [:br]
@@ -248,7 +253,7 @@
 
   [:body {:class "mdc-typography"}
 
-   [:div {:style "width:60%; margin: auto;"}
+   [:div
 
     mdc
 
@@ -258,8 +263,8 @@
      }"]
 
 
-    [:div {:class "mdc-layout-grid"}
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+    [:div {:class "mdc-layout-grid ggray bbbb"}
+     [:div {:class "mdc-layout-grid__inner"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-8 mdc-typography--headline6"}
        [:a {:href "/" :class "mdc-button menu-el"} "Список пациентов"]]
@@ -282,7 +287,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-typography--headline6"}
        [:span "Значение"]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Фамилия"]]
@@ -290,7 +295,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:family_name card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Имя"]]
@@ -298,7 +303,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:first_name card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Отчество"]]
@@ -306,7 +311,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:last_name card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Пол"]]
@@ -314,7 +319,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:gender card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Дата рождения"]]
@@ -322,7 +327,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:birthdate card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Тип крови"]]
@@ -330,7 +335,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:blood_type card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Рост"]]
@@ -338,7 +343,7 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span (:height card)]]]
 
-     [:div {:class "mdc-layout-grid__inner bbbb"}
+     [:div {:class "mdc-layout-grid__inner bgray bbbb"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 table-el"}
        [:span "Вес"]]
@@ -354,10 +359,10 @@
     [:br]
 
 
-    [:div {:class "mdc-layout-grid"}
+    [:div {:class "mdc-layout-gridW"}
      [:div {:class "mdc-layout-grid__inner"}
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6 "}
        [:span "Название осмотра"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
@@ -370,7 +375,7 @@
      (reduce
        (fn [view record]
          (conj view
-               [:div {:class "mdc-layout-grid__inner bbbb"}
+               [:div {:class "mdc-layout-grid__inner bbbb bgray"}
 
                 [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 table-el"}
                  [:span (:name record)]]
@@ -399,7 +404,7 @@
 
     [:label "Название:"
      [:br]
-     [:input {:type "text" :minlength 1 :name "name" :class "inputs" :required true}]]
+     [:input {:type "text" :minlength 1 :pattern "[А-Я][а-я]{0,10}" :title "Первая буква заглавная и далее до 10 строчных" :name "name" :class "inputs" :required true}]]
 
     [:br]
 

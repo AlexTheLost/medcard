@@ -55,6 +55,8 @@
   (.html (.body (Jsoup/parseBodyFragment html-str))))
 
 
+
+
 (defn view-med-cards [med-cards & [family-name]]
   [:html
 
@@ -73,17 +75,16 @@
        [:a {:href "/card/add" :class "mdc-button menu-el"} "Добавить новую карту"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
-       [:a {:href "/card/add" :class "mdc-button menu-el"} "О программе"]]
+       [:a {:href "/about/programm" :class "mdc-button menu-el"} "О программе"]]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
-       [:a {:href "/card/add" :class "mdc-button menu-el"} "О разработчике"]]
+       [:a {:href "/about/developer" :class "mdc-button menu-el"} "О разработчике"]]
 
       ]]
 
 
+
     [:div {:class "mdc-layout-grid"}
-
-
 
 
      [:form {:action "/card/search/family-name" :method "GET"}
@@ -401,10 +402,10 @@
         [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6 "}
          [:span "Название осмотра"]]
 
-        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 mdc-typography--headline6"}
+        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
          [:span "Дата"]]
 
-        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-6 mdc-typography--headline6"}
+        [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-7 mdc-typography--headline6"}
          [:span "Описание"]]])
 
      (reduce
@@ -415,10 +416,10 @@
                 [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 table-el"}
                  [:span (:name record)]]
 
-                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-3 table-el"}
+                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 table-el"}
                  [:span (:create_time record)]]
 
-                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-6 table-el"}
+                [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-7 table-el"}
                  [:span (:description record)]]]))
        (list)
        records)
@@ -441,7 +442,7 @@
 
     [:label "Название:"
      [:br]
-     [:input {:type "text" :minlength 1 :pattern "[А-Я][а-я]{0,10}" :title "Первая буква заглавная и далее до 10 строчных" :name "name" :class "inputs" :required true}]]
+     [:input {:type "text" :minlength 1 :pattern "[А-Я][а-я]{0,45}" :title "Первая буква заглавная и далее до 45 строчных" :name "name" :class "inputs" :required true}]]
 
     [:br]
 
@@ -527,6 +528,81 @@
         (let [id (java.lang.Long/parseLong (:id params))]
           (sql-query/insert-record id (dissoc params :id))
           (redirect (str "/card/view/" id))))
+
+
+  (GET "/about/programm" []
+       (html5
+         [:html
+          {:lang "ru"}
+          [:head
+           [:meta {:charset "utf-8"}]
+           [:title "О программе"]
+           [:style
+            "\n     .block1 { \n      width: 1000px; /* Ширина элемента в пикселах */\n      padding: 20px; /* Поля вокруг текста */\n      margin-top: 40px; \n      margin: auto; /* Выравниваем по центру */\n      background: #66b3ff; /* Цвет фона */  \n      background: linear-gradient(to right, #66b3ff, #99ccff, #cce6ff, #ffffff);\n      }\n      .center {text-align: center;}\n      .left {text-align: left;}\n   "]]
+          [:body
+           " \n   "
+           [:div.block1
+            [:div.center [:h1 "О программе"]]
+            [:div.left
+             [:p
+              [:strong
+               "Основными целями разработки программного средства являются:"]]
+             [:ul
+              {:type "square"}
+              [:li
+               "повысить продуктивность и качество работы сотрудников медицинского учреждения;"]
+              [:li
+               "повысить скорость и качество ведения консультаций пациентов;"]
+              [:li
+               "повысить удовлетворяемость пациентов от предоставленных услуг медицинского учреждения."]]
+             [:p [:strong "Функции приложения:"]]
+             [:ul
+              {:type "square"}
+              [:li
+               [:i "Информационная:"]
+               [:ul
+                [:li
+                 "Обеспечение доступа к медицинской картотеке, содержащей в себе задокументированную и сохраненную соответствующую медицинскую информацию о состоянии здоровья пациента: данные о пациенте, диагнозы, осмотры, заключения, результаты лабораторных анализов и прочие медицинские исследования."]]]
+              [:li
+               [:i "Маркетинговая:"]
+               [:ul
+                [:li
+                 "Возможность врачу без дополнительных затрат времени и сил работать с информацией о состоянии здоровья пациента с максимальным удобством для себя и максимальной эффективностью с точки зрения лечебно-диагностического процесса."]
+                [:li
+                 "Возможность вторичному пациенту обращаться в медицинское учреждение без носителя информации, содержащий историю болезни, что повысит комфорт и скорость обслуживания клиента."]
+                [:li
+                 "Предоставление пациентам печатных или электронных копий хранимой информации."]]]
+              [:li
+               [:i "Коммуникационная:"]
+               [:ul
+                [:li
+                 "Предоставление, уполномоченному медицинскому персоналу, полной информации о данных и здоровье конкретного пациента, хранящейся в медицинской картотеке."]]]]
+             "  \n   "]]]]))
+
+
+  (GET "/about/developer" []
+       (html5
+         [:html
+          {:lang "ru"}
+          [:head
+           [:meta {:charset "utf-8"}]
+           [:title "О разработчике"]
+           [:style
+            "\n     .block1 { \n      width: 1000px; /* Ширина элемента в пикселах */\n      padding: 20px; /* Поля вокруг текста */\n      margin-top: 40px; \n      margin: auto; /* Выравниваем по центру */\n      background: #66b3ff; /* Цвет фона */\nbackground: linear-gradient(to bottom, #66b3ff, #99ccff, #cce6ff, #ffffff);\ndisplay: flex;\n    justify-content: center; /*Центрирование по горизонтали*/\n    align-items: center;     /*Центрирование по вертикали */\n      }\n      /*.center {text-align: center;}*/\n   "]]
+          [:body
+           " \n   "
+           [:div.block1
+            [:div.center
+             [:center [:h1 "О разработчике"]]
+             [:h3
+              "ФИО слушателя:  "
+              [:font {:color "#000d1a"} "Мелех Ксения Сергеевна"]]
+             [:h3 "Группа:  " [:font {:color "#000d1a"} "ПВ2-16ПО"]]
+             [:h3
+              "Год разработки программы: "
+              [:font {:color "#000d1a"} "2018 год"]]]]]]))
+
+
 
   (route/resources "/")
 

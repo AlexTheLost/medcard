@@ -23,14 +23,3 @@
     (str "\n" coll-str "\n")))
 
 
-(defn filter-map [pred m]
-  (let [transient-map (transient {})]
-    (persistent!
-      (reduce-kv
-        (fn [filtered-map k v]
-          (if (pred k v)
-            (assoc! filtered-map k v)
-            filtered-map))
-        transient-map
-        m))))
-

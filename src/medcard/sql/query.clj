@@ -5,9 +5,6 @@
     [medcard.utils :refer [pstr pprn]]
     ))
 
-;; https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css
-;; https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js
-
 
 (def datasource-options {:auto-commit        true
                          :read-only          false
@@ -19,7 +16,7 @@
                          :maximum-pool-size  10
                          :pool-name          "db-pool"
                          :adapter            "postgresql"
-                         :username               "medcard"
+                         :username           "medcard"
                          :password           "medcard"
                          :database-name      "medcards"
                          :server-name        "localhost"
@@ -29,7 +26,6 @@
 
 (def db-spec
   {:datasource (make-datasource datasource-options)})
-;; (close-datasource datasource)
 
 
 (def date-formatted
@@ -59,21 +55,9 @@
                               card
                               ["id = ?" id]
                               )))))
-;; (pprn
-;;   (update-card
-;;     21
-;;     {:family_name "!!!!!!!!!"
-;;      :first_name "Александр"
-;;      :last_name "Валентинович"
-;;      :gender "мужской"
-;;      :birthdate "30-07-1989"
-;;      :blood_type "A" ;; A B AB O
-;;      :height "184"
-;;      :weight "82"}))
 
 
 (defn insert-card [card]
-  ;;   (pprn card)
   (let [birthdate (:birthdate card)
         birthdate (parse-date birthdate)
         card (assoc card :birthdate birthdate)
@@ -87,16 +71,6 @@
         card (assoc card :weight weight)]
 
     (:id (first (jdbc/insert! db-spec :card card)))))
-;; (pprn
-;;   (insert-card
-;;     {:family_name "Белькевич"
-;;      :first_name "Александр"
-;;      :last_name "Валентинович"
-;;      :gender "мужской"
-;;      :birthdate "30-07-1989"
-;;      :blood_type "A" ;; A B AB O
-;;      :height "184"
-;;      :weight "82"}))
 
 
 
@@ -112,14 +86,12 @@
   (jdbc/query db-spec
               ["SELECT * FROM card WHERE id = ?" id]
               {:result-set-fn first}))
-;; (pprn (select-card-by-id 21))
 
 
 (defn select-card-all []
   (jdbc/query
     db-spec
     ["SELECT * FROM card"]))
-;; (pprn (select-card-all))
 
 
 (def datetime-formatted-to
@@ -133,12 +105,11 @@
     {:row-fn (fn [record]
                (let [datetime (.format datetime-formatted-to (:create_time record))]
                  (assoc record :create_time datetime)))
-     ;; :result-set-fn first
      }))
-;; (pprn (select-record-by-card-id 12))
 
 
 (defn insert-record [card-id record]
   (jdbc/insert! db-spec :record
                 (assoc record :card_id card-id)))
-;; (insert-record 12 {:name "s" :description "d1"})
+
+

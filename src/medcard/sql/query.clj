@@ -99,6 +99,15 @@
 ;;      :weight "82"}))
 
 
+
+(defn select-card-by-family-name [family-name]
+  (jdbc/query
+    db-spec
+    ["SELECT * from CARD WHERE LOWER(family_name) LIKE LOWER(?);" (str "%" family-name "%")])) ; '%?%'
+;; (pprn (select-card-by-family-name "бе"))
+
+
+
 (defn select-card-by-id [id]
   (jdbc/query db-spec
               ["SELECT * FROM card WHERE id = ?" id]

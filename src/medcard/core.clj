@@ -43,7 +43,7 @@
   (.html (.body (Jsoup/parseBodyFragment html-str))))
 
 
-(defn view-med-cards [med-cards]
+(defn view-med-cards [med-cards & [family-name]]
   [:html
 
    [:head
@@ -70,6 +70,28 @@
 
 
     [:div {:class "mdc-layout-grid"}
+
+
+
+
+     [:form {:action "/card/search/family-name" :method "GET"}
+
+
+      [:lable "Найти по фамилии:"]
+
+      [:div {:class "mdc-layout-grid__inner"}
+
+       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
+        [:input {:id "my-text-field" :value family-name :name "family-name" :type "text" :class "mdc-text-field__input"}]]
+
+       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
+        [:input {:value "Найти" :type "submit" :class "mdc-button menu-el"}]]
+
+       ]]
+
+     [:br]
+     [:br]
+
      [:div {:class "mdc-layout-grid__inner"}
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
@@ -419,18 +441,29 @@
 (defroutes handler
   (GET "/" []
        (->> (sql-query/select-card-all)
-            pprn
+            ;; pprn
             view-med-cards
             html
             ;;             html-formating
             (str "<!DOCTYPE html> \n")
             ))
 
+
+  (GET "/card/search/family-name" [family-name]
+       (str
+         "<!DOCTYPE html> \n"
+         (html
+           (view-med-cards
+             (sql-query/select-card-by-family-name family-name)
+             family-name))))
+
+
   (GET "/card/add" []
        (->> (html (view-add-card "/card/add"))
             html-formating
             (str "<!DOCTYPE html> \n")
             ))
+
 
   (POST "/card/add" {params :params}
         (let [id (sql-query/insert-card params)]

@@ -1,3 +1,8 @@
+var user_div = document.getElementById("id-user-div");
+var user_a = document.getElementById("id-user-a");
+
+
+
 /*!
  Material Components for the Web
  Copyright (c) 2018 Google Inc.

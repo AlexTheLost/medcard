@@ -12,6 +12,8 @@
                  [org.clojure/java.jdbc "0.7.6"]
                  [org.postgresql/postgresql "42.2.2"]
                  [hikari-cp "2.4.0"]
+                 ;; Auth:
+                 [ring-basic-authentication "1.0.5"]
                  ;; DEV:
                  [org.jsoup/jsoup "1.11.3"]
                  ]

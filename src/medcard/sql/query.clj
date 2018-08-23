@@ -113,3 +113,19 @@
                 (assoc record :card_id card-id)))
 
 
+
+(defn insert-record [login password]
+  (jdbc/insert!
+    db-spec :users
+    {:login login
+     :password password}))
+
+
+(defn select-user-by-login [login]
+  (jdbc/query
+    db-spec
+    ["SELECT * FROM users WHERE login = ?" login]
+    {:result-set-fn first}))
+
+;; (insert-record "a" "b")
+;; (select-user-by-login "a")

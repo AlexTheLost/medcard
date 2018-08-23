@@ -12,6 +12,7 @@
     [hiccup.page :refer [html5 include-css include-js]]
     [ring.util.response :refer [redirect]]
     [cheshire.core :refer [generate-string parse-string]]
+    [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
     [medcard.utils :refer [pstr pprn]]
     )
   (:import
@@ -22,7 +23,6 @@
 (def mdc
   (list
     (include-css "/min.css")
-    (include-js "/min.js")
     [:style
      ".table-el {
      margin: 15px 0px;
@@ -36,10 +36,10 @@
      border: 1px solid black;
      }
      .ggray {
-      background-color: #b3e0ff;
+     background-color: #b3e0ff;
      }
      .bgray {
-      background-color: #E6E6FA;
+     background-color: #E6E6FA;
      }
      "]
     ))
@@ -48,16 +48,23 @@
 (def footer
   [:footer
    [:hr]
-   [:div {:style "text-align: center;"} "&#169 Ксения Мелех"]])
+   [:div
+    {:style "text-align: center;"}
+    "&#169 Ксения Мелех"]])
 
 
 (defn html-formating [html-str]
   (.html (.body (Jsoup/parseBodyFragment html-str))))
 
 
+(defn getName [authorization]
+  (when authorization
+    (let [token (subs authorization 6)
+          lp (String. (.decode (java.util.Base64/getDecoder) token))]
+      (first (clojure.string/split lp #":")))))
 
 
-(defn view-med-cards [med-cards & [family-name]]
+(defn view-med-cards [med-cards & [family-name authorization]]
   [:html
 
    [:head
@@ -67,12 +74,16 @@
 
    [:body {:class "mdc-typography"}
 
-
     [:div {:class "mdc-layout-grid ggray bbbb"}
      [:div {:class "mdc-layout-grid__inner"}
 
-      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-8 mdc-typography--headline6"}
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
        [:a {:href "/card/add" :class "mdc-button menu-el"} "Добавить новую карту"]]
+
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-typography--headline6"}
+       (when-let [user-name (getName authorization)]
+         [:div {:class "mdc-button menu-el"} (str "Вы вошли как '" user-name "'")]
+         )]
 
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
        [:a {:href "/about/programm" :class "mdc-button menu-el"} "О программе"]]
@@ -80,8 +91,10 @@
       [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
        [:a {:href "/about/developer" :class "mdc-button menu-el"} "О разработчике"]]
 
-      ]]
+      [:div {:class "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 mdc-typography--headline6"}
+       [:a {:href "/user/create" :class "mdc-button menu-el"} "Создать аккаунт"]]
 
+      ]]
 
 
     [:div {:class "mdc-layout-grid"}
@@ -156,6 +169,8 @@
        med-cards)
 
      footer
+
+     (include-js "/min.js")
 
      ]]])
 
@@ -279,6 +294,8 @@
      [:input {:type "submit" :name "" :value "Сохранить"}]]
 
     footer
+
+    (include-js "/min.js")
 
     ]])
 
@@ -426,6 +443,8 @@
 
      footer
 
+     (include-js "/min.js")
+
      ]]])
 
 
@@ -457,27 +476,69 @@
 
     footer
 
+    (include-js "/min.js")
+    ]])
+
+
+(defn view-user-create []
+  [:div {:style "width:40%; margin: auto;"}
+   [:style
+    ".inputs {
+    width: 100%;
+    }"]
+
+   [:h3 "Добавить нового пользователя:"]
+
+   [:form {:action "/user/create" :method "POST"}
+
+    [:label "Логин:"
+     [:br]
+     [:input {:type "text" :name "login" :class "inputs" :required true}]]
+
+    [:br]
+
+    [:label "Пароль:"
+     [:br]
+     [:input {:type "text" :name "password" :class "inputs" :required true}]]
+
+    [:br]
+    [:br]
+
+    [:input {:type "submit" :value "Создать"}]
+
+    footer
+
+    (include-js "/min.js")
     ]])
 
 
 (defroutes handler
-  (GET "/" []
-       (->> (sql-query/select-card-all)
-            ;; pprn
-            view-med-cards
-            html
-            ;; html-formating
-            (str "<!DOCTYPE html> \n")
-            ))
+  (GET "/" r
+       (let [headers (:headers r)
+             authorization (get headers "authorization")]
+
+         (pprn authorization)
+
+         (-> (sql-query/select-card-all)
+             ;; pprn
+             (view-med-cards nil authorization)
+             html
+             ;; html-formating
+             (str "<!DOCTYPE html> \n")
+             )))
 
 
-  (GET "/card/search/family-name" [family-name]
-       (str
-         "<!DOCTYPE html> \n"
-         (html
-           (view-med-cards
-             (sql-query/select-card-by-family-name family-name)
-             family-name))))
+  (GET "/card/search/family-name" r
+       (let [headers (:headers r)
+             authorization (get headers "authorization")
+             family-name (:family-name (:params r))]
+         (str
+           "<!DOCTYPE html> \n"
+           (html
+             (view-med-cards
+               (sql-query/select-card-by-family-name family-name)
+               family-name
+               authorization)))))
 
 
   (GET "/card/add" []
@@ -603,16 +664,39 @@
               [:font {:color "#000d1a"} "2018 год"]]]]]]))
 
 
+  (GET "/user/create" []
+       (html5 (view-user-create)))
+
+
+  (POST "/user/create" [login password]
+        (sql-query/insert-record login password)
+        (redirect "/"))
+
+
+  (GET "/logout" []
+       {"WWW-Authenticate" "Basic realm=\"Login required\""
+        :status 401})
+
 
   (route/resources "/")
 
+
   (route/not-found "<h1>Page not found</h1>"))
+
+
+(defn authenticated? [user-name user-pass]
+  (or
+    (and (= user-name "admin")
+         (= user-pass "admin"))
+    (let [password (:password (sql-query/select-user-by-login user-name))]
+      (= password user-pass))))
 
 
 (def app
   (-> handler
       (site)
-      (wrap-resource "")))
+      (wrap-resource "")
+      (wrap-basic-authentication authenticated?)))
 
 
 (defn -main [& args]

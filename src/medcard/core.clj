@@ -50,7 +50,7 @@
    [:hr]
    [:div
     {:style "text-align: center;"}
-    "&#169 Ксения Мелех"]])
+    "&#169 Ксения Белькевич"]])
 
 
 (defn html-formating [html-str]
@@ -517,8 +517,6 @@
        (let [headers (:headers r)
              authorization (get headers "authorization")]
 
-         (pprn authorization)
-
          (-> (sql-query/select-card-all)
              ;; pprn
              (view-med-cards nil authorization)
@@ -657,7 +655,7 @@
              [:center [:h1 "О разработчике"]]
              [:h3
               "ФИО слушателя:  "
-              [:font {:color "#000d1a"} "Мелех Ксения Сергеевна"]]
+              [:font {:color "#000d1a"} "Белькевич Ксения Сергеевна"]]
              [:h3 "Группа:  " [:font {:color "#000d1a"} "ПВ2-16ПО"]]
              [:h3
               "Год разработки программы: "
